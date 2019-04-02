@@ -24,7 +24,10 @@ APP.Main = (function() {
   var count = 100;
   var main = $('main');
   var inDetails = false;
+  let elementCreated = false;
   var storyLoadCount = 0;
+  let storyDetails = document.createElement('section');
+  let detailsAdded = false;
   var localeData = {
     data: {
       intl: {
@@ -91,17 +94,17 @@ APP.Main = (function() {
 
   function onStoryClick(details) {
 
-    var storyDetails = $('sd-' + details.id);
+    //var storyDetails = $('sd-' + details.id);
 
     // Wait a little time then show the story details.
-    setTimeout(showStory.bind(this, details.id), 60);
+    //setTimeout(showStory.bind(this, details.id), 60);
 
     // Create and append the story. A visual change...
     // perhaps that should be in a requestAnimationFrame?
     // And maybe, since they're all the same, I don't
     // need to make a new element every single time? I mean,
     // it inflates the DOM and I can only see one at once.
-    if (!storyDetails) {
+    //if (!storyDetails) {
 
       if (details.url)
         details.urlobj = new URL(details.url);
@@ -117,12 +120,14 @@ APP.Main = (function() {
         by: '', text: 'Loading comment...'
       });
 
-      storyDetails = document.createElement('section');
+      //storyDetails = document.createElement('section');
       storyDetails.setAttribute('id', 'sd-' + details.id);
       storyDetails.classList.add('story-details');
-      storyDetails.innerHTML = storyDetailsHtml;
 
-      document.body.appendChild(storyDetails);
+      storyDetails.innerHTML = storyDetailsHtml;
+      if (!detailsAdded) {
+        document.body.appendChild(storyDetails);
+      }
 
       commentsElement = storyDetails.querySelector('.js-comments');
       storyHeader = storyDetails.querySelector('.js-header');
@@ -157,11 +162,16 @@ APP.Main = (function() {
               localeData);
         });
       }
-    }
-
+   // }
+    showStory(details.id);
   }
 
   function showStory(id) {
+
+    storyDetails.classList.add('visible');
+    storyDetails.classList.remove('hidden');
+
+    /*
 
     if (inDetails)
       return;
@@ -191,7 +201,8 @@ APP.Main = (function() {
 
       // Set up the next bit of the animation if there is more to do.
       if (Math.abs(left) > 0.5)
-        setTimeout(animate, 4);
+      requestAnimationFrame(animate);
+        //setTimeout(animate, 4);
       else
         left = 0;
 
@@ -204,12 +215,18 @@ APP.Main = (function() {
     // every few milliseconds. That's going to keep
     // it all tight. Or maybe we're doing visual changes
     // and they should be in a requestAnimationFrame
-    setTimeout(animate, 4);
+    //setTimeout(animate, 4);
+    requestAnimationFrame(animate);
+    */
   }
 
   function hideStory(id) {
 
-    if (!inDetails)
+    storyDetails.classList.add('hidden');
+    storyDetails.classList.remove('visible');
+
+   /*
+   if (!inDetails)
       return;
 
     var storyDetails = $('#sd-' + id);
@@ -218,6 +235,8 @@ APP.Main = (function() {
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
 
+    //TODO: change onStoryClick JS with CSS for better performance
+    
     function animate () {
 
       // Find out where it currently is.
@@ -230,7 +249,8 @@ APP.Main = (function() {
 
       // Set up the next bit of the animation if there is more to do.
       if (Math.abs(left - target) > 0.5) {
-        setTimeout(animate, 4);
+        requestAnimationFrame(animate);
+        //setTimeout(animate, 4);
       } else {
         left = target;
         inDetails = false;
@@ -240,21 +260,28 @@ APP.Main = (function() {
       // I hope I don't trigger a forced synchronous layout!
       storyDetails.style.left = left + 'px';
     }
+    */
 
     // We want slick, right, so let's do a setTimeout
     // every few milliseconds. That's going to keep
     // it all tight. Or maybe we're doing visual changes
     // and they should be in a requestAnimationFrame
-    setTimeout(animate, 4);
+    //requestAnimationFrame(animate);
+    //setTimeout(animate, 4);
   }
 
   /**
    * Does this really add anything? Can we do this kind
    * of work in a cheaper way?
    */
+
+   // I remove this function because is to have and give just unnecessary style
   function colorizeAndScaleStories() {
+    /*
 
     var storyElements = document.querySelectorAll('.story');
+
+    var height = main.offsetHeight;
 
     // It does seem awfully broad to change all the
     // colors every time!
@@ -265,8 +292,8 @@ APP.Main = (function() {
       var title = story.querySelector('.story__title');
 
       // Base the scale on the y position of the score.
-      var height = main.offsetHeight;
-      var mainPosition = main.getBoundingClientRect();
+      //var height = main.offsetHeight;
+      //var mainPosition = main.getBoundingClientRect();
       var scoreLocation = score.getBoundingClientRect().top -
           document.body.getBoundingClientRect().top;
       var scale = Math.min(1, 1 - (0.05 * ((scoreLocation - 170) / height)));
@@ -283,6 +310,7 @@ APP.Main = (function() {
       score.style.backgroundColor = 'hsl(42, ' + saturation + '%, 50%)';
       title.style.opacity = opacity;
     }
+*/
   }
 
   main.addEventListener('touchstart', function(evt) {
